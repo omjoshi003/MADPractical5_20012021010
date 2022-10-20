@@ -6,46 +6,41 @@ import android.media.MediaPlayer
 import android.os.IBinder
 
 class MyService : Service() {
-    companion object {
-        val DATA_KEY="service"
-        val DATA_VALUE="play/pause"
+
+    companion object{
+        val DATA_KEY = "service"
+        val DATA_VALUE = "play/pause"
     }
+
     private lateinit var player: MediaPlayer
 
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int
-    {
-//        return super.onStartCommand(intent, flags, startId)
-        if (!this::player.isInitialized){
-            player=MediaPlayer.create(this,R.raw.song)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if(!this::player.isInitialized) {
+            player = MediaPlayer.create(this, R.raw.song)
         }
-        if(intent!=null)
-        {
-            val str=intent.getStringExtra(DATA_KEY)
-            if(str== DATA_VALUE)
-            {
-                if(player.isPlaying)
-                {
+        if(intent != null){
+            val str = intent.getStringExtra(DATA_KEY)
+
+            if(str == DATA_VALUE){
+                if(player.isPlaying){
                     player.pause()
                 }
-                else
-                {
+                else{
                     player.start()
                 }
             }
         }
-        else
-        {
+        else{
             player.start()
         }
         return START_STICKY
     }
 
-    override fun onDestroy()
-    {
+    override fun onDestroy() {
         player.stop()
         super.onDestroy()
     }

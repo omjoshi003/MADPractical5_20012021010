@@ -16,7 +16,6 @@ import kotlinx.coroutines.NonCancellable.start
 class MainActivity : AppCompatActivity() {
     private lateinit var player: MediaPlayer
 
-
     private lateinit var binding: ActivityMainBinding
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        var count:Int=0
         fun play(){
             Intent(applicationContext,MyService::class.java).putExtra(MyService.DATA_KEY,MyService.DATA_VALUE).apply { startService(this) }
         }
@@ -42,54 +42,52 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnPrevious.setOnClickListener{
+            stop()
             play()
         }
 
         binding.btnPlay.setOnClickListener{
 
-            if (!this::player.isInitialized){
-                player=MediaPlayer.create(this,R.raw.song)
-            }
-            if(player.isPlaying){
-                player.pause()
-                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
-
-            }
-            else{
+//            if (!this::player.isInitialized){
+//                player=MediaPlayer.create(this,R.raw.song)
+//            }
+//            if(player.isPlaying){
+//                player.pause()
+//                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
+//
+//            }
+//            else{
+//                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_pause_24))
+//                player.start()
+//            }
+            if(count%2==0){
                 binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_pause_24))
-                player.start()
+                count++
             }
-        }
 
-        binding.btnNext.setOnClickListener{
+            else{
+                binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
+                count++
+            }
 
             play()
         }
 
-        binding.btnStop.setOnClickListener{
-            if (!this::player.isInitialized){
-                player=MediaPlayer.create(this,R.raw.song)
-            }
-            player.pause()
-            binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
+        binding.btnNext.setOnClickListener{
+            stop()
+            play()
         }
 
-        binding.slider.setOnSeekBarChangeListener(object :
-            OnSeekBarChangeListener {
-            override fun onProgressChanged(seek: SeekBar,
-                                           progress: Int, fromUser: Boolean) {
-                player=MediaPlayer.create(applicationContext,R.raw.song)
-                player.seekTo(progress)
-            }
+        binding.btnStop.setOnClickListener{
+//            if (!this::player.isInitialized){
+//                player=MediaPlayer.create(this,R.raw.song)
+//            }
+//            player.pause()
+//            binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
 
-            override fun onStartTrackingTouch(seek: SeekBar) {
-                play()
-            }
-
-            override fun onStopTrackingTouch(seek: SeekBar) {
-                stop()
-            }
-        })
-
+            binding.btnPlay.setImageDrawable(getDrawable(R.drawable.ic_baseline_play_arrow_24))
+            stop()
+            count++
+        }
     }
 }
